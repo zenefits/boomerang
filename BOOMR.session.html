@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Boomerang Tutorial: Measuring arbitrary events</title>
+	<title>Boomerang Class: session</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -81,62 +81,492 @@
 <div class="row">
 
 	
-	<div class="col-md-12">
+	<div class="col-md-8">
 	
 		<div id="main">
-			<section class="tutorial-section">
-
-<header>
-    <h1>Measuring arbitrary events</h1>
-</header>
-
-<article>
-    <p>Boomerang has utility methods to assist in measuring the elapsed time of
-any arbitrary event you want to measure.</p>
-<p>Note: If you want to measure <code>XMLHttpRequests</code>, you should utilize the
-<a href="BOOMR.plugins.AutoXHR.html"><code>AutoXHR</code></a> plugin.</p>
-<p>There are two ways of measuring events:</p>
-<ol>
-<li>Call <a href="BOOMR.html#.requestStart"><code>BOOMR.requestStart()</code></a> to mark the beginning of the event, then
- call <code>.loaded()</code> to mark when it is complete</li>
-<li>Call <a href="BOOMR.html#.responseEnd"><code>BOOMR.responseEnd()</code></a> with your own timestamps or elapsed time</li>
-</ol>
-<p>Both of these methods will trigger a beacon with the Page Group
-(<a href="BOOMR.plugins.RT.html"><code>h.pg</code></a>) set to the input name.</p>
-<h2>Using <code>BOOMR.requestStart</code></h2><p><a href="BOOMR.html#.requestStart"><code>BOOMR.requestStart</code></a> can be used to have Boomerang track a complete event.
-When <a href="BOOMR.html#.requestStart"><code>BOOMR.requestStart</code></a> is called, Boomerang will mark the start time.</p>
-<p>Once the event is complete, you can call <code>.loaded()</code> on the returned object to
-mark the end timestamp.</p>
-<p>Example:</p>
-<pre class="prettyprint source lang-javascript"><code>var timer = BOOMR.requestStart(&quot;my-timer&quot;);
-setTimeout(function() {
-  // will send a beacon with the page group of &quot;my-timer&quot;
-  // and an elapsed time of approximately 1 second
-  timer.loaded();
-}, 1000);</code></pre><h2>Using <code>BOOMR.responseEnd</code></h2><p><a href="BOOMR.html#.responseEnd"><code>BOOMR.responseEnd</code></a> can be used to immediately send a beacon based on the
-given start time (and optional end time).</p>
-<p>Example:</p>
-<pre class="prettyprint source lang-javascript"><code>var startTime = BOOMR.now();
-
-setTimeout(function() {
-  // immediately sends a beacon with the page group of &quot;my-timer&quot; and
-  // measured from the startTime to now.
-  BOOMR.responseEnd(&quot;my-timer&quot;, startTime);
-
-  // you can also specify the end time, i.e. 500ms ago
-  BOOMR.responseEnd(&quot;my-other-timer&quot;, startTime, {}, BOOMR.now() - 500);
-}, 1000);</code></pre>
-</article>
+			
 
 
+    
+    <section>
 
-</section>
+    <header>
+        
+            <h1>
+                <span class="ancestors"><a href="BOOMR.html">BOOMR</a>.</span>
+            
+            session
+            </h1>
+            
+        
+    </header>
+
+
+    <article>
+        <div class="container-overview">
+        
+            
+<hr>
+<dt>
+    
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Session data</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+        </div>
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+            <h2 class="subsection-title">Members</h2>
+
+            <dl>
+                
+<hr>
+<dt class="name" id=".domain">
+    <h3 class="member-name" id=".domain">domain<span class="type-signature"> :string</span></h3>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Session Domain.</p>
+<p>You can disable all cookies by setting site_domain to a falsy value.</p>
+    </div>
+    
+
+    
+        <h4>Type:</h4>
+        <ul>
+            <li>
+                
+<span class="param-type">string</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+            
+                
+<hr>
+<dt class="name" id=".enabled">
+    <h3 class="member-name" id=".enabled">enabled<span class="type-signature"> :boolean</span></h3>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Session enabled (Are session cookies enabled?)</p>
+    </div>
+    
+
+    
+        <h4>Type:</h4>
+        <ul>
+            <li>
+                
+<span class="param-type">boolean</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+            
+                
+<hr>
+<dt class="name" id=".ID">
+    <h3 class="member-name" id=".ID">ID<span class="type-signature"> :string</span></h3>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Session ID.  This will be randomly generated in the client but may
+be overwritten by the server if not set.</p>
+    </div>
+    
+
+    
+        <h4>Type:</h4>
+        <ul>
+            <li>
+                
+<span class="param-type">string</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+            
+                
+<hr>
+<dt class="name" id=".length">
+    <h3 class="member-name" id=".length">length<span class="type-signature"> :number</span></h3>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Session length (number of pages)</p>
+    </div>
+    
+
+    
+        <h4>Type:</h4>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+            
+                
+<hr>
+<dt class="name" id=".start">
+    <h3 class="member-name" id=".start">start<span class="type-signature"> :<a href="global.html#TimeStamp">TimeStamp</a></span></h3>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Session start time.</p>
+    </div>
+    
+
+    
+        <h4>Type:</h4>
+        <ul>
+            <li>
+                
+<span class="param-type"><a href="global.html#TimeStamp">TimeStamp</a></span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+            </dl>
+        
+
+        
+
+        
+
+        
+    </article>
+
+    </section>
+
+
+
 
 		</div>
 	</div>
 
 	<div class="clearfix"></div>
 
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
 	
 
 </div>

@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Boomerang Tutorial: Measuring arbitrary events</title>
+	<title>Boomerang Tutorial: Performance Tests</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -87,45 +87,40 @@
 			<section class="tutorial-section">
 
 <header>
-    <h1>Measuring arbitrary events</h1>
+    <h1>Performance Tests</h1>
 </header>
 
 <article>
-    <p>Boomerang has utility methods to assist in measuring the elapsed time of
-any arbitrary event you want to measure.</p>
-<p>Note: If you want to measure <code>XMLHttpRequests</code>, you should utilize the
-<a href="BOOMR.plugins.AutoXHR.html"><code>AutoXHR</code></a> plugin.</p>
-<p>There are two ways of measuring events:</p>
-<ol>
-<li>Call <a href="BOOMR.html#.requestStart"><code>BOOMR.requestStart()</code></a> to mark the beginning of the event, then
- call <code>.loaded()</code> to mark when it is complete</li>
-<li>Call <a href="BOOMR.html#.responseEnd"><code>BOOMR.responseEnd()</code></a> with your own timestamps or elapsed time</li>
-</ol>
-<p>Both of these methods will trigger a beacon with the Page Group
-(<a href="BOOMR.plugins.RT.html"><code>h.pg</code></a>) set to the input name.</p>
-<h2>Using <code>BOOMR.requestStart</code></h2><p><a href="BOOMR.html#.requestStart"><code>BOOMR.requestStart</code></a> can be used to have Boomerang track a complete event.
-When <a href="BOOMR.html#.requestStart"><code>BOOMR.requestStart</code></a> is called, Boomerang will mark the start time.</p>
-<p>Once the event is complete, you can call <code>.loaded()</code> on the returned object to
-mark the end timestamp.</p>
-<p>Example:</p>
-<pre class="prettyprint source lang-javascript"><code>var timer = BOOMR.requestStart(&quot;my-timer&quot;);
-setTimeout(function() {
-  // will send a beacon with the page group of &quot;my-timer&quot;
-  // and an elapsed time of approximately 1 second
-  timer.loaded();
-}, 1000);</code></pre><h2>Using <code>BOOMR.responseEnd</code></h2><p><a href="BOOMR.html#.responseEnd"><code>BOOMR.responseEnd</code></a> can be used to immediately send a beacon based on the
-given start time (and optional end time).</p>
-<p>Example:</p>
-<pre class="prettyprint source lang-javascript"><code>var startTime = BOOMR.now();
+    <p>Boomerang has a suite of performance tests to ensure code changes do not introduce performance regressions.</p>
+<p>The performance tests reside in <code>tests/perf/</code>.</p>
+<h2>Running</h2><p>To run the performance tests:</p>
+<pre class="prettyprint source"><code>grunt perf</code></pre><p>This should run all suites in <code>tests/perf/</code> and will save the results in <code>tests/perf/results/</code>:</p>
+<ul>
+<li><code>tests/perf/results/metrics.json</code>: Results of each test</li>
+<li><code>tests/perf/results/[scenario].[test]</code>: Raw results for each test</li>
+<li><code>tests/perf/results/baseline.json</code>: Baseline comparison file (<code>grunt perf:baseline</code>)</li>
+</ul>
+<p>Example results:</p>
+<pre class="prettyprint source"><code>{
+  &quot;00-basic&quot;: {
+    &quot;00-empty&quot;: {
+      &quot;page_load_time&quot;: 27.5,
+      &quot;boomerang_javascript_time&quot;: 29.5,
+      &quot;total_javascript_time&quot;: 43,
+      &quot;mark_startup_called&quot;: 1,
+      &quot;mark_check_doc_domain_called&quot;: 4,
+  ...
+}</code></pre><h2>Comparing to a Baseline</h2><p>To compare performance results to a baseline, you first need to run this on the &quot;before&quot; codebase:</p>
+<pre class="prettyprint source"><code>grunt perf</code></pre><p>This will create <code>tests/perf/results/baseline.json</code>.</p>
+<p>Then, you can run performance tests against the &quot;current&quot; code by executing:</p>
+<pre class="prettyprint source"><code>grunt perf:compare</code></pre><p>This will create a new <code>tests/perf/results/metrics.json</code> each run, and will compare those results to <code>tests/perf/results/baseline.json</code>:</p>
+<pre class="prettyprint source"><code>$ grunt perf-compare --diff-only
+Running &quot;perf-compare&quot; task
+Results comparison to baseline:
+00-basic.00-empty.page_load_time                                       :  28 -1 (-4%)
+00-basic.00-empty.mark_fire_event_before_beacon_called                 : [missing in baseline]
 
-setTimeout(function() {
-  // immediately sends a beacon with the page group of &quot;my-timer&quot; and
-  // measured from the startTime to now.
-  BOOMR.responseEnd(&quot;my-timer&quot;, startTime);
-
-  // you can also specify the end time, i.e. 500ms ago
-  BOOMR.responseEnd(&quot;my-other-timer&quot;, startTime, {}, BOOMR.now() - 500);
-}, 1000);</code></pre>
+Done.</code></pre>
 </article>
 
 

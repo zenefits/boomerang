@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Boomerang Tutorial: Measuring arbitrary events</title>
+	<title>Boomerang Tutorial: Page Overrides</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -87,45 +87,105 @@
 			<section class="tutorial-section">
 
 <header>
-    <h1>Measuring arbitrary events</h1>
+    <h1>Page Overrides</h1>
 </header>
 
 <article>
-    <p>Boomerang has utility methods to assist in measuring the elapsed time of
-any arbitrary event you want to measure.</p>
-<p>Note: If you want to measure <code>XMLHttpRequests</code>, you should utilize the
-<a href="BOOMR.plugins.AutoXHR.html"><code>AutoXHR</code></a> plugin.</p>
-<p>There are two ways of measuring events:</p>
-<ol>
-<li>Call <a href="BOOMR.html#.requestStart"><code>BOOMR.requestStart()</code></a> to mark the beginning of the event, then
- call <code>.loaded()</code> to mark when it is complete</li>
-<li>Call <a href="BOOMR.html#.responseEnd"><code>BOOMR.responseEnd()</code></a> with your own timestamps or elapsed time</li>
-</ol>
-<p>Both of these methods will trigger a beacon with the Page Group
-(<a href="BOOMR.plugins.RT.html"><code>h.pg</code></a>) set to the input name.</p>
-<h2>Using <code>BOOMR.requestStart</code></h2><p><a href="BOOMR.html#.requestStart"><code>BOOMR.requestStart</code></a> can be used to have Boomerang track a complete event.
-When <a href="BOOMR.html#.requestStart"><code>BOOMR.requestStart</code></a> is called, Boomerang will mark the start time.</p>
-<p>Once the event is complete, you can call <code>.loaded()</code> on the returned object to
-mark the end timestamp.</p>
-<p>Example:</p>
-<pre class="prettyprint source lang-javascript"><code>var timer = BOOMR.requestStart(&quot;my-timer&quot;);
-setTimeout(function() {
-  // will send a beacon with the page group of &quot;my-timer&quot;
-  // and an elapsed time of approximately 1 second
-  timer.loaded();
-}, 1000);</code></pre><h2>Using <code>BOOMR.responseEnd</code></h2><p><a href="BOOMR.html#.responseEnd"><code>BOOMR.responseEnd</code></a> can be used to immediately send a beacon based on the
-given start time (and optional end time).</p>
-<p>Example:</p>
-<pre class="prettyprint source lang-javascript"><code>var startTime = BOOMR.now();
-
-setTimeout(function() {
-  // immediately sends a beacon with the page group of &quot;my-timer&quot; and
-  // measured from the startTime to now.
-  BOOMR.responseEnd(&quot;my-timer&quot;, startTime);
-
-  // you can also specify the end time, i.e. 500ms ago
-  BOOMR.responseEnd(&quot;my-other-timer&quot;, startTime, {}, BOOMR.now() - 500);
-}, 1000);</code></pre>
+    <p>Boomerang may override (wrap) native DOM functions for monitoring purposes, depending
+on the plugins and features that are enabled.</p>
+<p>Generally, Boomerang wraps these functions to add a small amount of custom instrumentation,
+prior to executing the original function.</p>
+<p>The following is a list of known DOM overrides:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Method</th>
+<th style="text-align:left">Plugin</th>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>XMLHttpRequest</code> constructor</td>
+<td style="text-align:left"><a href="BOOMR.plugins.AutoXHR.html"><code>BOOMR.plugins.AutoXHR</code></a></td>
+<td style="text-align:left"><code>instrument_xhr</code></td>
+<td style="text-align:left">Monitor timing for XHRs (individual and during SPA navigations)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>fetch</code></td>
+<td style="text-align:left"><a href="BOOMR.plugins.AutoXHR.html"><code>BOOMR.plugins.AutoXHR</code></a></td>
+<td style="text-align:left"><code>AutoXHR.monitorFetch</code></td>
+<td style="text-align:left">Monitor timing for fetches (individual and during SPA navigations)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>window.onerror</code></td>
+<td style="text-align:left"><a href="BOOMR.plugins.Errors.html"><code>BOOMR.plugins.Errors</code></a></td>
+<td style="text-align:left"><code>Errors.monitorGlobal</code></td>
+<td style="text-align:left">Monitor global exceptions</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>console.error</code></td>
+<td style="text-align:left"><a href="BOOMR.plugins.Errors.html"><code>BOOMR.plugins.Errors</code></a></td>
+<td style="text-align:left"><code>Errors.monitorConsole</code></td>
+<td style="text-align:left">Monitor app-generated error messages</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>addEventListener</code></td>
+<td style="text-align:left"><a href="BOOMR.plugins.Errors.html"><code>BOOMR.plugins.Errors</code></a></td>
+<td style="text-align:left"><code>Errors.monitorEvents</code></td>
+<td style="text-align:left">Wrapped so messages from cross-origin frames have a full stack</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>removeEventListener</code></td>
+<td style="text-align:left"><a href="BOOMR.plugins.Errors.html"><code>BOOMR.plugins.Errors</code></a></td>
+<td style="text-align:left"><code>Errors.monitorEvents</code></td>
+<td style="text-align:left">Wrapped so messages from cross-origin frames have a full stack</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>setTimeout</code></td>
+<td style="text-align:left"><a href="BOOMR.plugins.Errors.html"><code>BOOMR.plugins.Errors</code></a></td>
+<td style="text-align:left"><code>Errors.monitorTimeout</code></td>
+<td style="text-align:left">Wrapped so messages from cross-origin frames have a full stack</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>setInterval</code></td>
+<td style="text-align:left"><a href="BOOMR.plugins.Errors.html"><code>BOOMR.plugins.Errors</code></a></td>
+<td style="text-align:left"><code>Errors.monitorTimeout</code></td>
+<td style="text-align:left">Wrapped so messages from cross-origin frames have a full stack</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>history.back</code></td>
+<td style="text-align:left"><a href="BOOMR.plugins.History.html"><code>BOOMR.plugins.History</code></a></td>
+<td style="text-align:left">When <a href="BOOMR.plugins.History.html"><code>BOOMR.plugins.History</code></a> is enabled</td>
+<td style="text-align:left">SPA Soft Navigation monitoring</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>history.forward</code></td>
+<td style="text-align:left"><a href="BOOMR.plugins.History.html"><code>BOOMR.plugins.History</code></a></td>
+<td style="text-align:left">When <a href="BOOMR.plugins.History.html"><code>BOOMR.plugins.History</code></a> is enabled</td>
+<td style="text-align:left">SPA Soft Navigation monitoring</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>history.pushState</code></td>
+<td style="text-align:left"><a href="BOOMR.plugins.History.html"><code>BOOMR.plugins.History</code></a></td>
+<td style="text-align:left">When <a href="BOOMR.plugins.History.html"><code>BOOMR.plugins.History</code></a> is enabled</td>
+<td style="text-align:left">SPA Soft Navigation monitoring</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>history.replaceState</code></td>
+<td style="text-align:left"><a href="BOOMR.plugins.History.html"><code>BOOMR.plugins.History</code></a></td>
+<td style="text-align:left">When <a href="BOOMR.plugins.History.html"><code>BOOMR.plugins.History</code></a> is enabled</td>
+<td style="text-align:left">SPA Soft Navigation monitoring</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>history.go</code></td>
+<td style="text-align:left"><a href="BOOMR.plugins.History.html"><code>BOOMR.plugins.History</code></a></td>
+<td style="text-align:left">When <a href="BOOMR.plugins.History.html"><code>BOOMR.plugins.History</code></a> is enabled</td>
+<td style="text-align:left">SPA Soft Navigation monitoring</td>
+</tr>
+</tbody>
+</table>
 </article>
 
 
