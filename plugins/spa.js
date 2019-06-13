@@ -267,7 +267,7 @@
 			// late to monitor for new DOM elements.  Don't hold the initial page load beacon.
 			initialRouteChangeCompleted = true;
 
-			if (autoXhrEnabled) {
+			if (autoXhrEnabled) {	
 				// re-enable AutoXHR if it's enabled
 				BOOMR.plugins.AutoXHR.enableAutoXhr();
 			}
