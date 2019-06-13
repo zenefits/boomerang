@@ -562,7 +562,8 @@
 			total_nodes: 0,  // total MO resources + xhrs + wait filter (max: 1)
 			resources: [],  // resources reported to MO handler (no xhrs)
 			aborted: false,  // this event was aborted
-			complete: false
+			complete: false,
+			xhrResources: resource.initiator === "xhr" ? [resource] : []
 		},
 		    i,
 		    last_ev,
@@ -651,6 +652,7 @@
 			MutationHandler.start();
 
 			if (!resource.wait) {
+
 				// give SPAs a bit more time to do something since we know this was
 				// an interesting event.
 				this.setTimeout(impl.spaIdleTimeout, index);
@@ -671,7 +673,19 @@
 
 		this.watch++;
 		this.pending_events.push(ev);
-		resource.index = index;
+
+		var pending_events = this.pending_events;
+		// If hard navigation wait for any previous xhr requests to complete
+		if (ev.type === "spa_hard") {
+			this.pending_events.forEach(function(event, eventIndex) {
+				if (event.type === "xhr") {
+					event.xhrResources.forEach(function(xhrResource) {
+						handler.add_event_resource(xhrResource);
+					});
+					pending_events[eventIndex] = undefined;
+				}
+			});
+		}
 
 		return index;
 	};
@@ -981,6 +995,9 @@
 				this.sendEvent(index);
 			}
 
+			// Check for any previous xhr's. Wait for them if incomplete
+			
+
 			// if there are outstanding downloads left, they will trigger a
 			// sendEvent for the SPA/XHR pending event once complete
 		}
@@ -1129,7 +1146,7 @@
 	 */
 	MutationHandler.prototype.wait_for_node = function(node, index) {
 		var self = this, current_event, els, interesting = false, i, l, url,
-		    exisitingNodeSrcUrlChanged = false, resourceNum, domHeight, domWidth, listener;
+			exisitingNodeSrcUrlChanged = false, resourceNum, domHeight, domWidth, listener;
 
 		// only images, iframes and links if stylesheet
 		// nodeName for SVG:IMAGE returns `image` in lowercase
@@ -1351,6 +1368,10 @@
 
 		resource.index = index;
 		resource.node = true;  // this resource is a node being tracked by an existing pending event
+
+		if (resource.initiator === "xhr") {
+			current_event.xhrResources.push(resource);
+		}
 
 		return index;
 	};
