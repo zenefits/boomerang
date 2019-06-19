@@ -2438,7 +2438,7 @@
 			// gather config and config overrides
 			BOOMR.utils.pluginConfig(impl, config, "AutoXHR",
 			    ["spaBackEndResources", "alwaysSendXhr", "monitorFetch", "fetchBodyUsedWait",
-			    "spaIdleTimeout", "xhrIdleTimeout"]);
+			    "spaIdleTimeout", "xhrIdleTimeout", "existingResources"]);
 
 			BOOMR.instrumentXHR = instrumentXHR;
 			BOOMR.uninstrumentXHR = uninstrumentXHR;
@@ -2517,6 +2517,13 @@
 					BOOMR.uninstrumentXHR();
 					BOOMR.uninstrumentFetch();
 				}
+			}
+
+			if (impl.existingResources) {
+				impl.existingResources.forEach(function(resource) {
+					handler.addEvent(resource);
+					resource.onFinish(function() {impl.loadFinished(resource)});
+				});
 			}
 
 			BOOMR.registerEvent("xhr_error");
