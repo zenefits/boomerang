@@ -718,6 +718,7 @@
 			this.watch--;
 
 			ev.resource.resources = ev.resources;
+			ev.resource.xhrResources = ev.xhrResources;
 
 			// for SPA events, the resource's URL may be set to the previous navigation's URL.
 			// reset it to the current document URL

@@ -167,7 +167,7 @@
 			// always use the start time of navigationStart
 			resource.timing.requestStart = navigationStart;
 
-			if (resource.resources.length === 0) {
+			if (resource.resources.length === 0 && (!resource.xhrResources || resource.xhrResources.length === 0)) {
 				// No other resources were fetched, so set the end time
 				// to NavigationTiming's performance.loadEventEnd if available (instead of 'now')
 				p = BOOMR.getPerformance();
