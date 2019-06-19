@@ -1682,7 +1682,7 @@
 			}
 
 			a.href = url;
-			if (impl.excludeFilter(a)) {
+			if (impl.excludeFilter(a, {fetchOptions: {input: input, init: init}})) {
 				// this fetch should be excluded from instrumentation
 				BOOMR.debug("Exclude found for resource: " + a.href + " Skipping Fetch instrumentation!", "AutoXHR");
 				// call the original open method
@@ -2248,7 +2248,7 @@
 		 *
 		 * @return {boolean} true if the XHR should not be instrumented false if it should be instrumented
 		 */
-		excludeFilter: function(anchor) {
+		excludeFilter: function(anchor, options) {
 			var idx, ret, ctx;
 
 			// If anchor is null we just throw it out period
@@ -2264,7 +2264,7 @@
 					}
 
 					try {
-						ret = impl.excludeFilters[idx].cb.call(ctx, anchor);
+						ret = impl.excludeFilters[idx].cb.call(ctx, anchor, options);
 						if (ret) {
 							/* BEGIN_DEBUG */
 							debugLog("Found matching filter at: " +
