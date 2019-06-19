@@ -438,7 +438,7 @@
 
 			// if we have a routeChangeWaitFilter, make sure AutoXHR waits on the custom event
 			// for this SPA soft route
-			if (initiator === "spa" && routeChangeWaitFilter) {
+			if (routeChangeWaitFilter) {
 				debugLog("Running route change wait filter");
 				try {
 					if (routeChangeWaitFilter.apply(null, arguments)) {
