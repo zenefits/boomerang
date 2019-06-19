@@ -263,10 +263,6 @@
 				return;
 			}
 
-			// We missed the initial route change (we loaded too slowly), so we're too
-			// late to monitor for new DOM elements.  Don't hold the initial page load beacon.
-			initialRouteChangeCompleted = true;
-
 			if (autoXhrEnabled) {	
 				// re-enable AutoXHR if it's enabled
 				BOOMR.plugins.AutoXHR.enableAutoXhr();
