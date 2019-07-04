@@ -1362,8 +1362,12 @@
 
 		debugLog("Monitoring " + resource.type +  " URL: " + resource.url + " for event id: " + index);
 
-		// increase the number of outstanding resources by one
-		current_event.nodes_to_wait++;
+		// Ignore xhr's which are already complete (these are passed in as existingResources)
+		if (!resource.isComplete) {
+			// increase the number of outstanding resources by one
+			current_event.nodes_to_wait++;
+		}
+		
 		// increase the number of total resources by one
 		current_event.total_nodes++;
 
