@@ -1,6 +1,6 @@
 {
   "name": "boomerangjs",
-  "version": "1.650.0-zenefits.1",
+  "version": "1.650.0-zenefits.2",
   "releaseVersion": "1",
   "description": "boomerang always comes back, except when it hits something",
   "main": "boomerang.js",
