@@ -144,7 +144,7 @@
 			// timeout callbacks. If for example the back button is clicked and a replaceState
 			// is called then the popstate event should be triggered to extend this timeout before
 			// the callback is called.
-			impl.routeChangeInProgress = setTimeout(impl.resetRouteChangeInProgress, 50);
+			impl.routeChangeInProgress = setTimeout(impl.resetRouteChangeInProgress, impl.routeChangeProgressTimeout || 50);
 		},
 
 		/**
@@ -179,6 +179,10 @@
 				// has fired
 				if (impl.disableHardNav && !BOOMR.onloadFired()) {
 					return;
+				}
+
+				if (BOOMR.plugins.SPA.isHardSpaNavInProgress()) {
+					debugLog("hardSpaNavigation is progress, not triggering");
 				}
 
 				if (!impl.routeChangeInProgress) {
@@ -427,7 +431,7 @@
 			BOOMR.utils.pluginConfig(impl, config, "History",
 				["auto", "enabled", "disableHardNav",
 				 "routeFilter", "routeChangeWaitFilter",
-				 "monitorReplaceState"]);
+				 "monitorReplaceState", "routeChangeProgressTimeout"]);
 
 			if (impl.auto && impl.enabled) {
 				this.hook(undefined, true, {});
