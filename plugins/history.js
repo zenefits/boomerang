@@ -181,10 +181,6 @@
 					return;
 				}
 
-				if (BOOMR.plugins.SPA.isHardSpaNavInProgress()) {
-					debugLog("hardSpaNavigation is progress, not triggering");
-				}
-
 				if (!impl.routeChangeInProgress) {
 					debugLog("routeChange triggered, sending route_change() event");
 					impl.spaInit(title, url);
