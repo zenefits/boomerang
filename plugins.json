@@ -8,6 +8,7 @@
         "plugins/navtiming.js",
         "plugins/md5.js",
         "plugins/compression.js",
-        "plugins/usertiming.js"
+        "plugins/usertiming.js",
+        "plugins/google-tti.js"
     ]
 }
