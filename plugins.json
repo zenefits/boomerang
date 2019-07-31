@@ -9,6 +9,6 @@
         "plugins/md5.js",
         "plugins/compression.js",
         "plugins/usertiming.js",
-        "plugins/continuity.js"
+        "plugins/google-tti.js"
     ]
 }
