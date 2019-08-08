@@ -8,6 +8,7 @@
 	// This is optional, but the way we recommend you do it.
 	var impl = {
 		finished: false,
+		initialized: false
 	};
 
 	//
@@ -15,15 +16,18 @@
 	//
 	BOOMR.plugins.GoogleTTI = {
 		init: function() {
-			this.initPolyfill();
-			if (window.ttiPolyfill) {
-				window.ttiPolyfill.getFirstConsistentlyInteractive({}).then(function(tti) {
-					BOOMR.addVar("tti", tti);
-					impl.finished = true;
-					BOOMR.sendBeacon();
-				});
+			if (!impl.initialized) {
+				this.initPolyfill();
+				if (window.ttiPolyfill) {
+					window.ttiPolyfill.getFirstConsistentlyInteractive({}).then(function(tti) {
+						BOOMR.addVar("tti", tti);
+						impl.finished = true;
+						BOOMR.sendBeacon();
+					});
+				}
+
+				impl.initialized = true;
 			}
-			
 			return this;
 		},
 
