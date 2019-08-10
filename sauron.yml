@@ -1,0 +1,30 @@
+end_state: EndState
+state_machine:
+  EndState:
+    status_checks: []
+    on_success:
+      transition_state: EndState
+    on_failure:
+      transition_state: EndState
+  CodeReviewState:
+    status_checks:
+      - LGTM:
+          sticky: true
+          keywords:
+            - LGTM
+            - ':+1:'
+      - merge-label:
+          label_name: Merge
+    on_failure:
+      transition_state: CodeReviewState
+    on_success:
+      transition_state: QueuedState
+  QueuedState:
+    status_checks:
+      - merged: {}
+    on_failure:
+      transition_state: CodeReviewState
+    on_success:
+      transition_state: EndState
+initial_state: CodeReviewState
+merged_state: EndState
