@@ -997,7 +997,7 @@
 			}
 
 			// Check for any previous xhr's. Wait for them if incomplete
-			
+
 
 			// if there are outstanding downloads left, they will trigger a
 			// sendEvent for the SPA/XHR pending event once complete
@@ -1184,6 +1184,9 @@
 			}
 
 			if (node.nodeName === "IMG") {
+				if (impl.ignoreImages) {
+					return false;
+				}
 				if (node.naturalWidth && !exisitingNodeSrcUrlChanged) {
 					// img already loaded
 					return false;
@@ -1367,7 +1370,7 @@
 			// increase the number of outstanding resources by one
 			current_event.nodes_to_wait++;
 		}
-		
+
 		// increase the number of total resources by one
 		current_event.total_nodes++;
 
@@ -2443,7 +2446,7 @@
 			// gather config and config overrides
 			BOOMR.utils.pluginConfig(impl, config, "AutoXHR",
 			    ["spaBackEndResources", "alwaysSendXhr", "monitorFetch", "fetchBodyUsedWait",
-			    "spaIdleTimeout", "xhrIdleTimeout", "existingResources"]);
+			    "spaIdleTimeout", "xhrIdleTimeout", "existingResources", "ignoreImages"]);
 
 			BOOMR.instrumentXHR = instrumentXHR;
 			BOOMR.uninstrumentXHR = uninstrumentXHR;
