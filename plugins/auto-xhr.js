@@ -1197,6 +1197,10 @@
 				}
 			}
 
+			if (node.nodeName === "LINK" && impl.ignoreAddedStylesheets && node.rel && node.rel.match(/\bstylesheet\b/i)) {
+				return false;
+			}
+
 			// IFRAMEs whose SRC has changed will not fire a load event again
 			if (node.nodeName === "IFRAME" && exisitingNodeSrcUrlChanged) {
 				return false;
@@ -2446,7 +2450,7 @@
 			// gather config and config overrides
 			BOOMR.utils.pluginConfig(impl, config, "AutoXHR",
 			    ["spaBackEndResources", "alwaysSendXhr", "monitorFetch", "fetchBodyUsedWait",
-			    "spaIdleTimeout", "xhrIdleTimeout", "existingResources", "ignoreImages"]);
+			    "spaIdleTimeout", "xhrIdleTimeout", "existingResources", "ignoreImages", "ignoreAddedStylesheets"]);
 
 			BOOMR.instrumentXHR = instrumentXHR;
 			BOOMR.uninstrumentXHR = uninstrumentXHR;
