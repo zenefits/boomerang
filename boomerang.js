@@ -2350,7 +2350,10 @@ BOOMR_check_doc_domain();
 				    "strip_query_string",
 						"user_ip",
 						"useDOMContentLoaded"
-			    ];
+					];
+
+			// NOTE that useDOMContentLoaded is needed in other plugins so set it first
+			impl.useDOMContentLoaded= config.useDOMContentLoaded;
 
 			/* BEGIN_DEBUG */
 			BOOMR.utils.mark("init");
