@@ -338,7 +338,7 @@
 		}
 		else {
 			// the event listener will be registered early enough to get an unwanted event if we don't use setTimeout
-			BOOMR.window.addEventListener("load", function() { setTimeout(aelPopstate, 0); });
+			BOOMR.window.addEventListener(BOOMR.getLoadEvent(), function() { setTimeout(aelPopstate, 0); });
 		}
 
 		// listen for a beacon

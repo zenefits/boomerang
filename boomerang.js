@@ -2348,7 +2348,8 @@ BOOMR_check_doc_domain();
 				    "beacon_type",
 				    "site_domain",
 				    "strip_query_string",
-				    "user_ip"
+						"user_ip",
+						"useDOMContentLoaded"
 			    ];
 
 			/* BEGIN_DEBUG */
@@ -2586,7 +2587,7 @@ BOOMR_check_doc_domain();
 					BOOMR.utils.addListener(w, "pageshow", cb);
 				}
 				else {
-					BOOMR.utils.addListener(w, "load", cb);
+					BOOMR.utils.addListener(w, BOOMR.getLoadEvent(), cb);
 				}
 			}
 		},
@@ -2694,6 +2695,12 @@ BOOMR_check_doc_domain();
 			// doesn't fire a second `pageshow` event in some browsers (e.g. Safari). We need to check if
 			// `performance.timing.loadEventStart` or `BOOMR_onload` has occurred to detect this scenario. Will not work for
 			// older Safari that doesn't have NavTiming
+
+			if (BOOMR.getLoadEvent() === "DOMContentLoaded") {
+				return (d.readyState && (d.readyState === "complete" || d.readyState === "interactive")) || (p && p.timing && p.timing.domContentLoadedEventStart > 0) ||
+				w.BOOMR_onload > 0;
+			}
+
 			return ((d.readyState && d.readyState === "complete") ||
 			    (p && p.timing && p.timing.loadEventStart > 0) ||
 			    w.BOOMR_onload > 0);
@@ -3248,6 +3255,10 @@ BOOMR_check_doc_domain();
 		 */
 		getVar: function(name) {
 			return impl.vars[name];
+		},
+
+		getLoadEvent: function() {
+			return impl.useDOMContentLoaded ? "DOMContentLoaded" : 'load'
 		},
 
 		/**
