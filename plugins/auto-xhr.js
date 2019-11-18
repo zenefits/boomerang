@@ -827,7 +827,7 @@
 		if (resource.initiator === "spa_hard") {
 			// don't wait for onload if this was an aborted SPA navigation
 			if ((!ev || !ev.aborted) && !BOOMR.hasBrowserOnloadFired()) {
-				BOOMR.utils.addListener(w, "load", function() {
+				BOOMR.utils.addListener(w, BOOMR.getLoadEvent(), function() {
 					var loadTimestamp = BOOMR.now();
 
 					// run after the 'load' event handlers so loadEventEnd is captured

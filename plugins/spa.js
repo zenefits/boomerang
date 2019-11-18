@@ -171,8 +171,9 @@
 				// No other resources were fetched, so set the end time
 				// to NavigationTiming's performance.loadEventEnd if available (instead of 'now')
 				p = BOOMR.getPerformance();
-				if (p && p.timing && p.timing.navigationStart && p.timing.loadEventEnd) {
-					resource.timing.loadEventEnd = p.timing.loadEventEnd;
+				var potentialEndDate = BOOMR.getLoadEvent() ? p.timing.domContentLoadedEventEnd : p.timing.loadEventEnd;
+				if (potentialEndDate) {
+					resource.timing.loadEventEnd = potentialEndDate;
 				}
 			}
 		},
@@ -263,7 +264,7 @@
 				return;
 			}
 
-			if (autoXhrEnabled) {	
+			if (autoXhrEnabled) {
 				// re-enable AutoXHR if it's enabled
 				BOOMR.plugins.AutoXHR.enableAutoXhr();
 			}

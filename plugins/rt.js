@@ -777,11 +777,10 @@
 				// use loadEventEnd from NavigationTiming
 				p = BOOMR.getPerformance();
 
-				// We have navigation timing,
 				if (p && p.timing) {
-					// and the loadEventEnd timestamp
-					if (p.timing.loadEventEnd) {
-						return p.timing.loadEventEnd;
+					var potentialEndDate = BOOMR.getLoadEvent() ? p.timing.domContentLoadedEventEnd : p.timing.loadEventEnd;
+					if (potentialEndDate) {
+						return potentialEndDate;
 					}
 				}
 				// We don't have navigation timing,
