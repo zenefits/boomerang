@@ -814,6 +814,9 @@
 
 					impl.addedVars.push("pgu", "rt.quit", "rt.abld");
 				}
+
+				BOOMR.addVar('resources', resource.resources, true);
+				BOOMR.addVar('xhrResources', resource.xhrResources, true);
 			}
 
 			BOOMR.responseEnd(resource, startTime, resource);
