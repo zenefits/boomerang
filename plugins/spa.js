@@ -136,6 +136,8 @@
 	/* END_DEBUG */
 
 	var impl = {
+		minEndTime : null,
+
 		/**
 		 * Called after a SPA Hard navigation that missed the route change
 		 * completes.
@@ -172,8 +174,12 @@
 				// to NavigationTiming's performance.loadEventEnd if available (instead of 'now')
 				p = BOOMR.getPerformance();
 				var potentialEndDate = BOOMR.getLoadEvent() ? p.timing.domContentLoadedEventEnd : p.timing.loadEventEnd;
+				if (impl.minEndTime) {
+					potentialEndDate = impl.minEndTime;
+				}
 				if (potentialEndDate) {
 					resource.timing.loadEventEnd = potentialEndDate;
+					BOOMR.addVar("t_min_init", potentialEndDate);
 				}
 			}
 		},
@@ -218,6 +224,10 @@
 				if (initialRouteChangeStarted && autoXhrEnabled) {
 					BOOMR.plugins.AutoXHR.enableAutoXhr();
 				}
+			}
+
+			if (config && config.Spa && config.Spa.min_end_time) {
+				impl.minEndTime = config.Spa.min_end_time
 			}
 
 			if (initialized) {
