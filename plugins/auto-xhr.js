@@ -962,7 +962,6 @@
 		if (!timeout) {
 			return;
 		}
-		console.log("Setting time out", timeout);
 
 		this.clearTimeout(index);
 
@@ -1107,8 +1106,6 @@
 		}
 
 		current_event.nodes_to_wait--;
-
-		console.log("Firing load finished", current_event)
 
 		if (current_event.nodes_to_wait === 0) {
 			// mark the end timestamp with what was given to us, or, now
@@ -1932,7 +1929,6 @@
 			}
 		};
 
-		console.log("Overwiring native fetch");
 		// Overwrite window.fetch, ensuring the original is swapped back in
 		// if the Boomerang IFRAME is unloaded.  uninstrumentFetch() may also
 		// be used to swap the original back in.
@@ -2411,7 +2407,6 @@
 				handler.monitorMO(resource.index);
 
 				// fire the load_finished handler for the corresponding event.
-
 				handler.load_finished(resource.index, resource.timing.responseEnd);
 			}
 		}
