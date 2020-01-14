@@ -3584,6 +3584,10 @@ BOOMR_check_doc_domain();
 				return false;
 			}
 
+			if (impl.vars['http.initiator'] === 'spa_hard') {
+				BOOMR.appendVar('beacon_attempts', performance.now());
+			}
+
 			/* BEGIN_DEBUG */
 			BOOMR.utils.mark("send_beacon:start");
 			/* END_DEBUG */
@@ -3602,6 +3606,7 @@ BOOMR_check_doc_domain();
 					}
 					if (!this.plugins[k].is_complete(impl.vars)) {
 						BOOMR.debug("Plugin " + k + " is not complete, deferring beacon send");
+						BOOMR.appendVar('beacon_defer', k);
 						return false;
 					}
 				}

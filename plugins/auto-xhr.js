@@ -742,7 +742,7 @@
 				// if this was a SPA nav that triggered no additional resources, substract the
 				// SPA_TIMEOUT from now to determine the end time
 				if (!ev.forced && ev.total_nodes === 0) {
-					ev.resource.timing.loadEventEnd = now - impl.spaIdleTimeout;
+					ev.resource.timing.loadEventEnd = ev.resource.spaMinEndDate || (now - impl.spaIdleTimeout);
 				}
 			}
 
@@ -962,6 +962,7 @@
 		if (!timeout) {
 			return;
 		}
+		console.log("Setting time out", timeout);
 
 		this.clearTimeout(index);
 
@@ -1106,6 +1107,8 @@
 		}
 
 		current_event.nodes_to_wait--;
+
+		console.log("Firing load finished", current_event)
 
 		if (current_event.nodes_to_wait === 0) {
 			// mark the end timestamp with what was given to us, or, now
@@ -1376,6 +1379,9 @@
 		if (!resource.isComplete) {
 			// increase the number of outstanding resources by one
 			current_event.nodes_to_wait++;
+		} else if (resource.timing && resource.timing.loadEventEnd ) {
+			// The end time of this resource is at least the end of the dependent resource
+			current_event.resource.timing.loadEventEnd = Math.max(current_event.resource.timing.loadEventEnd || 0, resource.timing.loadEventEnd)
 		}
 
 		// increase the number of total resources by one
@@ -1926,6 +1932,7 @@
 			}
 		};
 
+		console.log("Overwiring native fetch");
 		// Overwrite window.fetch, ensuring the original is swapped back in
 		// if the Boomerang IFRAME is unloaded.  uninstrumentFetch() may also
 		// be used to swap the original back in.
@@ -2404,6 +2411,7 @@
 				handler.monitorMO(resource.index);
 
 				// fire the load_finished handler for the corresponding event.
+
 				handler.load_finished(resource.index, resource.timing.responseEnd);
 			}
 		}
@@ -2537,7 +2545,9 @@
 			if (impl.existingResources) {
 				impl.existingResources.forEach(function(resource) {
 					handler.addEvent(resource);
-					resource.onFinish(function() {impl.loadFinished(resource)});
+					if (!resource.isComplete) {
+						resource.onFinish(function() {impl.loadFinished(resource)});
+					}
 				});
 			}
 
