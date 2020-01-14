@@ -178,6 +178,7 @@
 					potentialEndDate = impl.minEndTime;
 				}
 				if (potentialEndDate) {
+					resource.spaMinEndDate = potentialEndDate;
 					resource.timing.loadEventEnd = potentialEndDate;
 					BOOMR.addVar("t_min_init", potentialEndDate);
 				}

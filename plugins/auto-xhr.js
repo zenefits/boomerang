@@ -742,7 +742,7 @@
 				// if this was a SPA nav that triggered no additional resources, substract the
 				// SPA_TIMEOUT from now to determine the end time
 				if (!ev.forced && ev.total_nodes === 0) {
-					ev.resource.timing.loadEventEnd = now - impl.spaIdleTimeout;
+					ev.resource.timing.loadEventEnd = ev.resource.spaMinEndDate || (now - impl.spaIdleTimeout);
 				}
 			}
 
@@ -1376,6 +1376,9 @@
 		if (!resource.isComplete) {
 			// increase the number of outstanding resources by one
 			current_event.nodes_to_wait++;
+		} else if (resource.timing && resource.timing.loadEventEnd ) {
+			// The end time of this resource is at least the end of the dependent resource
+			current_event.resource.timing.loadEventEnd = Math.max(current_event.resource.timing.loadEventEnd || 0, resource.timing.loadEventEnd)
 		}
 
 		// increase the number of total resources by one
@@ -2537,7 +2540,9 @@
 			if (impl.existingResources) {
 				impl.existingResources.forEach(function(resource) {
 					handler.addEvent(resource);
-					resource.onFinish(function() {impl.loadFinished(resource)});
+					if (!resource.isComplete) {
+						resource.onFinish(function() {impl.loadFinished(resource)});
+					}
 				});
 			}
 
